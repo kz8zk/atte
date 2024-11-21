@@ -5,8 +5,17 @@
 @endsection
 
 @section('content')
-<div class="date-display">
-    <h2>{{ $today }}</h2>
+<div class="date-navigation">
+    <form method="GET" action="{{ route('admin') }}" class="date-navigation__form">
+        <!-- 前日の日付リンク -->
+        <a href="{{ route('admin', ['date' => $yesterday->format('Y-m-d')]) }}" class="date-navigation__button">&lt;</a>
+
+        <!-- 現在の選択日付の表示 -->
+        <span class="date-navigation__current">{{ $today->format('Y-m-d') }}</span>
+
+        <!-- 翌日の日付リンク -->
+        <a href="{{ route('admin', ['date' => $tomorrow->format('Y-m-d')]) }}" class="date-navigation__button">&gt;</a>
+    </form>
 </div>
 
 <div class="attendance-table">

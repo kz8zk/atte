@@ -47,4 +47,9 @@ Route::middleware('auth')->group(function () {
 
     // 休憩終了ボタン
     Route::get('/attendance/rest-end', [TimeManagementController::class, 'restEnd'])->name('attendance.restEnd');
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/admin', [TimeManagementController::class, 'index'])->name('admin'); // ルート名を付与
+    });
+
 });

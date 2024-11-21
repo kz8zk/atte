@@ -10,65 +10,26 @@ use Carbon\Carbon;
 
 class TimeManagementController extends Controller
 {
-    //
-    // public function index()
-    // {
-    //     $today = Carbon::today();
-
     public function index(Request $request)
     {
         $date = $request->input('date');
-        if (isset($date)) {
+        $today = Carbon::today();  // デフォルトは今日の日付
+
+        if ($date) {
+            // ユーザーが選択した日付をCarbonインスタンスに変換
             $today = Carbon::parse($date);
-            $yesterday = $today->copy()->subDay(1)->format('Y-m-d');
-            $tomorrow = $today->copy()->addDay(1)->format('Y-m-d');
-            $attendances = Attendance::select('attendances.*', 'users.name as user_name')
-            ->leftJoin('users', 'users.id', 'attendances.user_id')
-            ->where('attendances.date', $date)
-                ->paginate(5);
-        } else {
-            $today = Carbon::today();
-            $yesterday = $today->copy()->subDay(1)->format('Y-m-d');
-            $tomorrow = $today->copy()->addDay(1)->format('Y-m-d');
-            $date = $today->format('Y-m-d');
-            $attendances = Attendance::select('attendances.*', 'users.name as user_name')
-            ->leftJoin('users', 'users.id', 'attendances.user_id')
-            ->where('attendances.date', $date)
-                ->paginate(5);
         }
-        // $date = $request->input('date');
 
-        // if (isset($date)) {
-        //     $today = Carbon::parse($date);
-        //     $yesterday = $today->copy()->subDay(1)->format('Y-m-d');
-        //     $tomorrow = $today->copy()->addDay(1)->format('Y-m-d');
-        //     $attendances = Attendance::where('date', $date)->paginate(5);
-        // } else {
-        //     $today = Carbon::today();
-        //     $yesterday = $today->copy()->subDay(1)->format('Y-m-d');
-        //     $tomorrow = $today->copy()->addDay(1)->format('Y-m-d');
-        //     $date = $today->format('Y-m-d');
-        //     $attendances = Attendance::where('date', $date)->paginate(5);
-        // };
+        // 昨日と明日の日付を取得
+        $yesterday = $today->copy()->subDay(1);
+        $tomorrow = $today->copy()->addDay(1);
 
 
-        // // $users = User::select('users.name as user_name', 'attendances.start as start', 'attendances.end as end')
-        // //     ->leftJoin('attendances', 'users.id', 'attendances.user_id')
-        // //     ->paginate(5);
-        // // // ->get();
-
-        // // print_r($users->toArray());
-        // // exit;
-        // foreach ($users as $user) {
-        // }
-        //ここから
-        // $attendances = Attendance::select('attendances.*', 'users.name as user_name')
-        //     ->leftJoin('users', 'users.id', 'attendances.user_id')
-        //     ->paginate(5);
-        // ここまで
-        // print_r($attendances->toArray());
-        // exit;
-
+        // 出席情報を取得
+        $attendances = Attendance::select('attendances.*', 'users.name as user_name')
+            ->leftJoin('users', 'users.id', '=', 'attendances.user_id')
+            ->where('attendances.date', $today->format('Y-m-d'))
+            ->paginate(5);
 
         foreach ($attendances as $attendance) {
             $totalRestTime = 0;
@@ -94,9 +55,7 @@ class TimeManagementController extends Controller
             $attendance->totalWorkTime = gmdate('H:i:s', $totalWorkTime);
         }
 
-
-        $today = $today->format('Y-m-d');
-        return view('admin', compact('attendances', 'today'));
+        return view('admin', compact('attendances', 'today', 'yesterday', 'tomorrow'));
     }
 
     // 勤務開始処理
@@ -117,8 +76,8 @@ class TimeManagementController extends Controller
             // 勤務開始データを保存
             Attendance::create([
                 'user_id' => $userId,
-                'start' => Carbon::now(),  // 勤務開始時間
-                'date' => $today,          // 今日の日付
+                'start' => Carbon::now(),
+                'date' => $today,
             ]);
         }
 
@@ -143,7 +102,7 @@ class TimeManagementController extends Controller
         if ($attendance && !$attendance->end) {
             // 勤務終了時間を保存
             $attendance->update([
-                'end' => Carbon::now(),  // 勤務終了時間
+                'end' => Carbon::now(),
             ]);
         }
 
@@ -161,8 +120,6 @@ class TimeManagementController extends Controller
             ->where('date', $today)
             ->first();
 
-
-        // 変更追加
         // 休憩が既に開始されていないか確認
         if ($attendance && !$attendance->rests()->whereNull('end')->exists()) {
             Rest::create([
@@ -170,7 +127,6 @@ class TimeManagementController extends Controller
                 'start' => Carbon::now(),
             ]);
         }
-
 
         // 休憩開始後、再度トップページにリダイレクト
         return redirect('/');
@@ -186,13 +142,6 @@ class TimeManagementController extends Controller
             ->where('date', $today)
             ->first();
 
-        // if ($attendance && !$attendance->break_end) {
-        //     $attendance->update([
-        //         'break_end' => Carbon::now(),
-        //     ]);
-        // }
-
-        // 変更追加
         // 未終了の休憩を取得して終了時間を記録
         if ($attendance) {
             $rest = $attendance->rests()->whereNull('end')->latest()->first();
@@ -204,5 +153,4 @@ class TimeManagementController extends Controller
         // 休憩終了後、再度トップページにリダイレクト
         return redirect('/');
     }
-
 }
