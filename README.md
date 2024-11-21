@@ -55,4 +55,52 @@ Laravel環境構築
   6. シーディングの実行  
    ```php artisan db:seed```
 
-## 他に記載することがあれば記述する
+## 他に記載することがあれば記述する  
+* シーダーファイル情報  
+  ユーザー数:11人
+   ```
+            'name' => 'テスト太郎',
+            'email' => 'User1@mailaddress.com'
+            'password' => 'password'
+  
+            'name' => 'テスト次郎',
+            'email' => 'User2@mailaddress.com'
+            'password' => 'password'
+
+            'name' => 'テスト三郎'
+            'email' => 'User3@mailaddress.com'
+            'password' => 'password'
+
+            'name' => 'テスト四郎'
+            'email' => 'User4@mailaddress.com'
+            'password' => 'password'
+        
+            'name' => 'テスト五郎'
+            'email' => 'User5@mailaddress.com'
+            'password' => 'password'
+
+            'name' => 'テスト六郎'
+            'email' => 'User6@mailaddress.com'
+            'password' => 'password'
+
+            'name' => 'テスト七郎'
+            'email' => 'User7@mailaddress.com'
+            'password' => 'password'
+
+            'name' => 'テスト八郎',
+            'email' => 'User8@mailaddress.com'
+            'password' => 'password'
+
+            'name' => 'テスト九郎',
+            'email' => 'User9@mailaddress.com'
+            'password' => 'password'
+
+            'name' => 'テスト十郎'
+            'email' => 'User10@mailaddress.com'
+            'password' => 'password'
+
+            'name' => 'テスト十一郎'
+            'email' => 'User11@mailaddress.com'
+            'password' => 'password'
+  ```
+  
