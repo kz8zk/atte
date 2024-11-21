@@ -9,7 +9,9 @@
 * 開発環境: http://localhost
 * phpMyAdmin: http://localhost:8080
 
-## 他のリポジトリ
+## 他のリポジトリ  
+特になし
+
 ## 機能一覧
 * ログイン機能
 * メール認証
