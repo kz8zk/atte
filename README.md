@@ -31,6 +31,6 @@
 
 # 環境構築　　
 Dockerビルド  
-1. git clone git@github.com:coachtech-material/php.git
+1. git clone git@github.com:kz8zk/atte.git
 
 ## 他に記載することがあれば記述する
